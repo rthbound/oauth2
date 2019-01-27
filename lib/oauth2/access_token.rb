@@ -165,14 +165,18 @@ module OAuth2
         opts[:params][options[:param_name]] = token
       when :body
         opts[:body] ||= {}
-        if opts[:body].is_a?(Hash)
-          opts[:body][options[:param_name]] = token
-        else
-          opts[:body] << "&#{options[:param_name]}=#{token}"
-        end
+        add_opt_to_body(opts)
         # @todo support for multi-part (file uploads)
       else
         raise("invalid :mode option of #{options[:mode]}")
+      end
+    end
+
+    def add_opt_to_body(opts)
+      if opts[:body].is_a?(Hash)
+        opts[:body][options[:param_name]] = token
+      else
+        opts[:body] << "&#{options[:param_name]}=#{token}"
       end
     end
   end
