@@ -39,7 +39,8 @@ module OAuth2
                   :connection_opts  => {},
                   :connection_build => block,
                   :max_redirects    => 5,
-                  :raise_errors     => true}.merge(opts)
+                  :raise_errors     => true,
+                  :logger           => ::Logger.new($stdout)}.merge(opts)
       @options[:connection_opts][:ssl] = ssl if ssl
     end
 
@@ -92,7 +93,7 @@ module OAuth2
     # @option opts [Symbol] :parse @see Response::initialize
     # @yield [req] The Faraday request
     def request(verb, url, opts = {}) # rubocop:disable CyclomaticComplexity, MethodLength, Metrics/AbcSize
-      connection.response :logger, ::Logger.new($stdout) if ENV['OAUTH_DEBUG'] == 'true'
+      connection.response :logger, options[:logger] if ENV['OAUTH_DEBUG'] == 'true'
 
       url = connection.build_url(url, opts[:params]).to_s
 
